@@ -1,0 +1,63 @@
+.tech-card {
+  background-color: var(--bg-card);
+  border-radius: 12px;
+  padding: 20px;
+
+  color: var(--text-main);
+  cursor: pointer;
+
+  border-left: 4px solid transparent;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; 
+  transition: background-color 0.25s ease, border-color 0.25s ease, transform 0.1s ease, box-shadow 0.25s ease;
+}
+
+.tech-card:hover {
+  background-color: var(--bg-card-hover);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+}
+
+.tech-card:active {
+  transform: scale(0.98);
+}
+
+.tech-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* --- Информация внутри карточки --- */
+.tech-info h3 {
+  margin: 0 0 10px;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.tech-info p {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  color: var(--text-secondary);
+}
+
+/* --- Статус --- */
+.tech-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+}
+
+.status-not-started { border-left-color: var(--red); }
+.status-in-progress { border-left-color: var(--yellow); }
+.status-completed { border-left-color: var(--green); }
+
+.status-icon {
+  font-size: 1.1rem;
+  transition: transform 0.2s ease;
+}
+
+.tech-card:active .status-icon { transform: scale(1.2); }
