@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import TechnologyCard from './components/TechnologyCard/TechnologyCard';
 import ProgressHeader from './components/ProgressHeader/ProgressHeader';
 import QuickActions from './components/QuickActions/QuickActions';
+import UserCard from './components/UserCard/UserCard';
 
 function App() {
   const [theme, setTheme] = useState('dark');
@@ -99,20 +100,31 @@ function App() {
         </button>
       </header>
 
-      {/* --- Поиск --- */}
-      <div className="search-box">
-        <input
-          type="text"
-          placeholder="Поиск технологий..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+      <section className="section-card">
+        <p className="section-label">ПРОФИЛЬ</p>
+
+        <UserCard
+          name="Глеб Ушаков"
+          role="Администратор"
+          avatarUrl="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRfVMhpKmVy_-iwfRLAiNiaDslMa-2oEz7KTw&s"
+          isOnline={true}
         />
-        <span>Найдено: {filteredTechnologies.length}</span>
-      </div>
+      </section>
 
       {/* --- Секция технологий с QuickActions --- */}
       <section className="section-card">
         <p className="section-label">ТЕХНОЛОГИИ</p>
+
+        {/* --- Поиск --- */}
+        <div className="search-box">
+          <input
+            type="text"
+            placeholder="Поиск технологий..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+          <span>Найдено: {filteredTechnologies.length}</span>
+        </div>
 
         <QuickActions
           activeFilter={activeFilter}
