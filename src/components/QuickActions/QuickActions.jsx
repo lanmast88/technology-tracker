@@ -1,15 +1,11 @@
 import './QuickActions.css';
 import { useState } from 'react';
-import Modal from '../Modal/Modal'; 
+import Modal from '../Modal/Modal';
 
-function QuickActions({
-  activeFilter,
-  setActiveFilter,
-  markAllCompleted,
-  resetAllStatuses,
-  technologies,
-}) {
+function QuickActions({ activeFilter, setActiveFilter, markAllCompleted, resetAllStatuses, technologies, setTechnologies }) {
   const [showExportModal, setShowExportModal] = useState(false);
+  const [showImportModal, setShowImportModal] = useState(false);
+  const [importText, setImportText] = useState('');
 
   const filters = [
     { id: 'all', label: 'Все' },
@@ -18,38 +14,74 @@ function QuickActions({
     { id: 'completed', label: 'Завершено' },
   ];
 
-  const handleExport = () => {
-    const dataStr = JSON.stringify(technologies, null, 2);
-    console.log('Данные для экспорта:', dataStr);
-    setShowExportModal(true);
+  // --- Экспорт данных
+  const handleExport = () => setShowExportModal(true);
+
+  // --- Импорт данных
+  const handleImport = () => setShowImportModal(true);
+  const applyImport = () => {
+    try {
+      const parsed = JSON.parse(importText);
+      if (Array.isArray(parsed)) {
+        setTechnologies(parsed);
+        setShowImportModal(false);
+        setImportText('');
+      } else {
+        alert('JSON должен быть массивом объектов технологий!');
+      }
+    } catch (err) {
+      alert('Ошибка импорта: некорректный JSON');
+    }
   };
 
   return (
     <div className="quick-actions">
       {/* --- Фильтры --- */}
       <div className="filters">
-        {filters.map((filter) => (
+        {filters.map(f => (
           <button
-            key={filter.id}
-            className={`filter-btn ${activeFilter === filter.id ? 'active' : ''}`}
-            onClick={() => setActiveFilter(filter.id)}
+            key={f.id}
+            className={`filter-btn ${activeFilter === f.id ? 'active' : ''}`}
+            onClick={() => setActiveFilter(f.id)}
           >
-            {filter.label}
+            {f.label}
           </button>
         ))}
       </div>
 
-      {/* --- Быстрые действия --- */}
+      {/* --- Действия --- */}
       <div className="actions">
         <button onClick={markAllCompleted}>Выполнить всё</button>
         <button onClick={resetAllStatuses}>Сбросить всё</button>
-        <button onClick={handleExport}>Экспорт данных</button>
+        <button onClick={handleExport}>Экспорт</button>
+        <button onClick={handleImport}>Импорт</button>
       </div>
 
-      {/* --- Модальное окно для экспорта --- */}
+      {/* --- Модалка экспорта --- */}
+      
       <Modal isOpen={showExportModal} onClose={() => setShowExportModal(false)} title="Экспорт данных">
-        <p>Данные подготовлены для экспорта!</p>
-        <p>Проверьте консоль разработчика для просмотра JSON.</p>
+        <div className='textarea-modal'>
+          <textarea
+            readOnly
+            value={JSON.stringify(technologies, null, 2)}
+            style={{ width: '100%', height: '300px' }}
+          />
+        </div>
+      </Modal>
+
+      {/* --- Модалка импорта --- */}
+      <Modal isOpen={showImportModal} onClose={() => setShowImportModal(false)} title="Импорт данных">
+        <div className='textarea-modal'>
+          <textarea
+            placeholder="Вставьте JSON сюда..."
+            value={importText}
+            onChange={(e) => setImportText(e.target.value)}
+            style={{ width: '100%', height: '300px' }}
+          />
+        </div>
+        <div className='actions'>
+          <button onClick={applyImport} style={{ marginTop: '10px' }}>Применить импорт</button>
+        </div>
       </Modal>
     </div>
   );

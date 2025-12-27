@@ -1,16 +1,31 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
+// Кастомный хук для работы с localStorage
 function useLocalStorage(key, initialValue) {
-  const [value, setValue] = useState(() => {
-    const stored = localStorage.getItem(key);
-    return stored ? JSON.parse(stored) : initialValue;
+  // Инициализируем состояние, пытаясь получить значение из localStorage
+  const [storedValue, setStoredValue] = useState(() => {
+    try {
+      const item = window.localStorage.getItem(key);
+      return item ? JSON.parse(item) : initialValue;
+    } catch (error) {
+      console.error(`Ошибка чтения из localStorage ключа "${key}":`, error)
+    }
   });
 
-  useEffect(() => {
-    localStorage.setItem(key, JSON.stringify(value));
-  }, [key, value]);
+  // Функция для обновления значения в состоянии и localStorage
+  const setValue = (value) => {
+    try {
+      const valueToStore = value instanceof Function ? value(storedValue) : value;
 
-  return [value, setValue];
+      setStoredValue(valueToStore);
+      window.localStorage.setItem(key, JSON.stringify(valueToStore));
+    } catch (error) {
+      console.error(`Ошибка записи в localStorage ключа "${key}":`, error);
+    }
+  };
+
+  return [storedValue, setValue];
+
 }
 
 export default useLocalStorage;

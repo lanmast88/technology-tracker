@@ -3,69 +3,67 @@ import { useState, useEffect } from 'react';
 import TechnologyCard from './components/TechnologyCard/TechnologyCard';
 import ProgressHeader from './components/ProgressHeader/ProgressHeader';
 import QuickActions from './components/QuickActions/QuickActions';
-import UserCard from './components/UserCard/UserCard';
+// import UserCard from './components/UserCard/UserCard';
+import useTechnologies from './hooks/useTechnologies';
 
 function App() {
+  
+
+  // --- Состояние темы, фильтра и поиска
+  // theme - текущая тема интерфейса (light/dark)
+  // activeFilter - текущий фильтр по статусу технологий
+  // searchQuery - строка поиска по технологиям
   const [theme, setTheme] = useState('dark');
   const [activeFilter, setActiveFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
 
-  const [technologies, setTechnologies] = useState([
-    { id: 1, title: 'React Components', description: 'Изучение базовых компонентов', status: 'not-started', notes: '' },
-    { id: 2, title: 'JSX Syntax', description: 'Освоение синтаксиса JSX', status: 'in-progress', notes: '' },
-    { id: 3, title: 'State Management', description: 'Работа с состоянием компонентов', status: 'completed', notes: '' },
-    { id: 4, title: 'Git & Version Control', description: 'Основы работы с Git и GitHub', status: 'completed', notes: '' },
-    { id: 5, title: 'REST API Basics', description: 'Принципы REST и взаимодействие клиента с сервером', status: 'not-started', notes: '' },
-    { id: 6, title: 'HTTP & Networking', description: 'Методы HTTP, статусы ответов и работа с запросами', status: 'completed', notes: '' },
-  ]);
-
-  const statusOrder = ['not-started', 'in-progress', 'completed'];
+  // --- Хук для работы с технологиями
+  // technologies - массив технологий
+  // updateStatus - функция смены статуса технологии
+  // updateNotes - функция обновления заметок
+  const { technologies, updateStatus, updateNotes, updateMany, setTechnologies } = useTechnologies();
 
   // --- Смена статуса карточки
-  const handleStatusChange = (id) => {
-    setTechnologies(prev =>
-      prev.map(tech =>
-        tech.id === id
-          ? { ...tech, status: statusOrder[(statusOrder.indexOf(tech.status) + 1) % statusOrder.length] }
-          : tech
-      )
-    );
+  // Переход к следующему стутусу по кругу
+  const statusOrder = ['not-started', 'in-progress', 'completed']; 
+  const handleStatusChange = (id, currentStatus) => {
+    const nextStatus =
+      statusOrder[(statusOrder.indexOf(currentStatus) + 1) % statusOrder.length];
+    updateStatus(id, nextStatus);
   };
 
   // --- Переключение темы
   useEffect(() => {
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme) setTheme(savedTheme);
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    setTheme(savedTheme);
+    document.body.setAttribute('data-theme', savedTheme);
   }, []);
 
-  useEffect(() => {
-    document.body.setAttribute('data-theme', theme);
-    localStorage.setItem('theme', theme);
-  }, [theme]);
-
   const themeStatusChange = () => {
-    setTheme(prev => (prev === 'light' ? 'dark' : 'light'));
+    setTheme(prev => {
+      const nextTheme = prev === 'light' ? 'dark' : 'light';
+      document.body.setAttribute('data-theme', nextTheme);
+      localStorage.setItem('theme', nextTheme);
+      return nextTheme;
+    });
   };
 
   // --- Быстрые действия
+  // Все карточки меняют статус на "completed"
   const markAllCompleted = () => {
-    setTechnologies(prev =>
-      prev.filter(t => isTechVisible(t)).map(t => ({ ...t, status: 'completed' }))
-        .concat(prev.filter(t => !isTechVisible(t)))
-    );
+    const visibleIds = filteredTechnologies.map(t => t.id);
+    updateMany(visibleIds, 'completed');
   };
 
+  // Сброс всех статусов карточек на "non-started"
   const resetAllStatuses = () => {
-    setTechnologies(prev =>
-      prev.filter(t => isTechVisible(t)).map(t => ({ ...t, status: 'not-started' }))
-        .concat(prev.filter(t => !isTechVisible(t)))
-    );
+    const visibleIds = filteredTechnologies.map(t => t.id);
+    updateMany(visibleIds, 'not-started');
   };
 
+  //  --- Обновление заметок
   const updateTechnologyNotes = (techId, newNotes) => {
-    setTechnologies(prev =>
-      prev.map(tech => (tech.id === techId ? { ...tech, notes: newNotes } : tech))
-    );
+    updateNotes(techId, newNotes);
   };
 
   // --- Фильтрация и поиск
@@ -76,46 +74,43 @@ function App() {
     return matchesFilter && matchesSearch;
   };
 
+  // Отфильтрованный список 
   const filteredTechnologies = technologies.filter(isTechVisible);
-
-  // --- Сохранение данных в localStorage
-  useEffect(() => {
-    localStorage.setItem('techTrackerData', JSON.stringify(technologies));
-  }, [technologies]);
-
-  useEffect(() => {
-    const saved = localStorage.getItem('techTrackerData');
-    if (saved) setTechnologies(JSON.parse(saved));
-  }, []);
 
   return (
     <div className="App">
+
+      {/* --- Хедер с названием и переключением темы --- */}
       <header className="workspace-header">
         <div className="workspace-title">
           <span className="title-main">Technology</span>
           <span className="title-secondary">tracker</span>
         </div>
-        <button className="theme-toggle" onClick={themeStatusChange}>
+        { <button className="theme-toggle" onClick={themeStatusChange}>
           {theme === 'light' ? '🌙 Тёмная тема' : '☀️ Светлая тема'}
-        </button>
+        </button> }
       </header>
 
-      <section className="section-card">
+      {/* ------------- TODO: Необходимо доработать UserCard позже --------------- */}
+
+      {/* --- Секция профиля пользователя --- */}
+      {/* <section className="section-card">
         <p className="section-label">ПРОФИЛЬ</p>
+
 
         <UserCard
           name="Глеб Ушаков"
           role="Администратор"
-          avatarUrl="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRfVMhpKmVy_-iwfRLAiNiaDslMa-2oEz7KTw&s"
+          avatarUrl="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRd_XRGE9j0tQkvkYFKQU5MlZw86IXuV9TbfA&s"
           isOnline={true}
         />
-      </section>
+      </section> */}
 
       {/* --- Секция технологий с QuickActions --- */}
       <section className="section-card">
         <p className="section-label">ТЕХНОЛОГИИ</p>
 
-        {/* --- Поиск --- */}
+        {/* --- Поиск по технологиям --- */}
         <div className="search-box">
           <input
             type="text"
@@ -126,20 +121,24 @@ function App() {
           <span>Найдено: {filteredTechnologies.length}</span>
         </div>
 
+        {/* --- Быстрые действия --- */}
         <QuickActions
           activeFilter={activeFilter}
           setActiveFilter={setActiveFilter}
           markAllCompleted={markAllCompleted}
           resetAllStatuses={resetAllStatuses}
           technologies={filteredTechnologies}
+          setTechnologies={setTechnologies} // передаем функцию из useTechnologies
         />
 
+
+        {/* --- Список карточек технологий --- */}
         <main className="tech-list">
           {filteredTechnologies.map((tech) => (
             <TechnologyCard
               key={tech.id}
               {...tech}
-              onStatusChange={handleStatusChange}
+              onStatusChange={() => handleStatusChange(tech.id, tech.status)}
               onNotesChange={updateTechnologyNotes}
             />
           ))}

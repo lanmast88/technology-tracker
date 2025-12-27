@@ -23,17 +23,11 @@
   transform: scale(0.98);
 }
 
-.tech-content {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-/* --- Информация внутри карточки --- */
 .tech-info h3 {
   margin: 0 0 10px;
   font-size: 1.2rem;
   font-weight: 600;
+  line-height: 1.2;
 }
 
 .tech-info p {
@@ -43,12 +37,49 @@
   color: var(--text-secondary);
 }
 
-/* --- Статус --- */
+.tech-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end; /* выравнивание заголовка и кнопки по нижнему краю */
+}
+
+/* Кнопка More */
+.menu-btn {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-soft);
+  color: var(--text-secondary);
+  padding: 6px 10px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 0.8rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.tech-card:hover .menu-btn {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.menu-btn:hover {
+  background-color: var(--bg-card-hover);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.25);
+  color: var(--text-main);
+}
+
+/* Статус */
 .tech-status {
   display: flex;
   align-items: center;
   gap: 8px;
   font-weight: 500;
+  margin-top: 12px;
 }
 
 .status-not-started { border-left-color: var(--red); }

@@ -1,17 +1,17 @@
 :root {
-  --bg-main: #f5f5f7;
-  --bg-surface: #ffffff;
-  --bg-card: #f5f5f7;
-  --bg-card-hover: #e9e9ef;
+  --bg-main: #f5f5f7;   /* Основной фон страницы */
+  --bg-surface: #ffffff;  /* Фон карточек и секций */
+  --bg-card: #f5f5f7;   /* Фон для интерактивных карточек */
+  --bg-card-hover: #e9e9ef;   /* Фон карточки при наведении */
 
-  --border-soft: rgba(0, 0, 0, 0.08);
+  --border-soft: rgba(0, 0, 0, 0.08);   /* Мягкая рамка для элементов */
 
-  --text-main: #1c1b1d;
-  --text-secondary: #6b6b6b;
+  --text-main: #1c1b1d;   /* Основной цвет текста */
+  --text-secondary: #6b6b6b;    /* Вторичный цвет текста, для подписи/мелкого текста */
 
-  --green: #4caf50;
-  --yellow: #ffb300;
-  --red: #f44336;
+  --green: #4caf50;   /* Цвет для успешных статусов / выделений */
+  --yellow: #ffb300;  /* Цвет для статусов в процессе / предупреждений */
+  --red: #f44336;   /* Цвет для статусов не начато / ошибок */
 }
 
 [data-theme='dark'] {
@@ -36,6 +36,7 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+/* Контейнер приложения */
 .App {
   max-width: 1200px;
   margin: 0 auto;
@@ -47,12 +48,14 @@ body {
   gap: 32px;
 }
 
+/* Хедер приложения */
 .workspace-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-between; /* Название слева, кнопка темы справа */
   align-items: center;
 }
 
+/* Название приложения */
 .workspace-title {
   display: flex;
   align-items: baseline;
@@ -70,6 +73,7 @@ body {
   color: var(--text-secondary);
 }
 
+/* Кнопка переключения темы */
 .theme-toggle {
   background-color: var(--bg-card);
   border: 1px solid var(--border-soft);
@@ -84,6 +88,7 @@ body {
   background-color: var(--bg-card-hover);
 }
 
+/* Секция карточек */
 .section-card {
   background-color: var(--bg-surface);
   border: 1px solid var(--border-soft);
@@ -95,6 +100,7 @@ body {
   gap: 20px;
 }
 
+/* Загаловок секции */
 .section-label {
   font-size: 0.7rem;
   letter-spacing: 0.14em;
@@ -103,12 +109,14 @@ body {
   color: var(--text-secondary);
 }
 
+/* Список технологий */
 .tech-list {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 20px;
 }
 
+/* Блок поиска по технологиям */
 .search-box {
   display: flex;
   align-items: center;
